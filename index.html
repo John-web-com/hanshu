@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apple设备工厂 · 函数学习</title>
+<link rel="stylesheet" href="styles.css?v=20261030q" />
+<link rel="stylesheet" href="liquid-glass.css?v=20261030q" />
+</head>
+<body>
+
+<!-- 液态玻璃：高光层的折射扰动滤镜 -->
+<svg class="lg-defs" aria-hidden="true" focusable="false">
+  <filter id="lg-warp" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.014" numOctaves="1" seed="9" result="noise" />
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="7"
+      xChannelSelector="R" yChannelSelector="G" result="warped" />
+    <feGaussianBlur in="warped" stdDeviation="0.7" />
+  </filter>
+</svg>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-logo"><svg class="mk" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="6" y="3" width="12" height="18" rx="3.4" />
+      <path d="M9.4 6.6h5.2" />
+      <circle cx="12" cy="17.4" r="1.25" />
+    </svg></span>
+    <span class="brand-text">Apple设备工厂</span>
+  </div>
+
+  <div class="topbar-right">
+
+    <nav class="seg compact" id="tabs">
+      <span class="seg-thumb" id="segThumb"></span>
+
+      <button class="seg-item active" data-view="super" aria-label="超级加工机">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4.2" />
+          <path d="M12 4.6v3M12 16.4v3M4.6 12h3M16.4 12h3" />
+        </svg>
+        <span class="seg-label">加工</span>
+      </button>
+
+      <button class="seg-item" data-view="flash" aria-label="闪卡挑战">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="5.5" width="16" height="13" rx="3" />
+          <path d="M8.2 10h7.6M8.2 14h4.2" />
+        </svg>
+        <span class="seg-label">闪卡</span>
+      </button>
+    </nav>
+
+    <button class="icon-btn" id="settingsBtn" aria-label="设置">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============ 设置模块 ============ -->
+<div class="settings-panel lg-regular" id="settingsPanel" hidden>
+  <div class="set-head">
+    <h2>设置</h2>
+    <span class="set-close" id="settingsClose" role="button" tabindex="0" aria-label="关闭">×</span>
+  </div>
+
+  <div class="set-row">
+    <span class="set-name">玻璃厚度</span>
+    <div class="seg mini" id="setMaterial">
+      <span class="seg-thumb" id="matThumb"></span>
+      <button class="seg-item" data-mat="clear">薄</button>
+      <button class="seg-item" data-mat="regular">标准</button>
+      <button class="seg-item" data-mat="thick">厚</button>
+    </div>
+  </div>
+
+  <label class="set-row switch">
+    <span class="set-name">镜面光跟随</span>
+    <span class="sw">
+      <input type="checkbox" id="setLight" checked />
+      <span class="sw-track"><span class="sw-knob"></span></span>
+    </span>
+  </label>
+
+  <label class="set-row switch">
+    <span class="set-name">背景金属流线</span>
+    <span class="sw">
+      <input type="checkbox" id="setLines" checked />
+      <span class="sw-track"><span class="sw-knob"></span></span>
+    </span>
+  </label>
+
+  <label class="set-row switch">
+    <span class="set-name">条纹流动动画</span>
+    <span class="sw">
+      <input type="checkbox" id="setFlow" checked />
+      <span class="sw-track"><span class="sw-knob"></span></span>
+    </span>
+  </label>
+
+  <label class="set-row switch">
+    <span class="set-name">投币后自动翻面</span>
+    <span class="sw">
+      <input type="checkbox" id="setAutoFlip" checked />
+      <span class="sw-track"><span class="sw-knob"></span></span>
+    </span>
+  </label>
+
+  <label class="set-row switch">
+    <span class="set-name">翻面时展开记录</span>
+    <span class="sw">
+      <input type="checkbox" id="setAutoHist" checked />
+      <span class="sw-track"><span class="sw-knob"></span></span>
+    </span>
+  </label>
+
+  <button class="btn ghost" id="setReset">恢复默认</button>
+</div>
+
+<main class="wrap" id="view-super">
+
+  <header class="hero">
+    <span class="logo"><svg class="mk" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="6" y="3" width="12" height="18" rx="3.4" />
+      <path d="M9.4 6.6h5.2" />
+      <circle cx="12" cy="17.4" r="1.25" />
+    </svg></span>
+    <div class="hero-text">
+      <h1>Apple设备工厂</h1>
+      <p>输入一个数字，机器把它放大 <b>k 倍</b>；再把结果投进去，就<b>再放大 k 倍</b> —— 于是成了「几倍的几倍」。</p>
+    </div>
+    <div class="formula">f(x) = k × x</div>
+  </header>
+
+  <div class="grid">
+
+    <!-- 左：加工台 -->
+    <section class="card">
+      <div class="step-head"><span class="step-no">1</span><h2>投进数字</h2></div>
+      <label class="lb" for="numIn">数字（多个用空格或逗号隔开）</label>
+      <input class="big-input" id="numIn" value="3" inputmode="decimal" />
+      <div class="quick" id="quickNum">
+        <button data-v="1">1</button>
+        <button data-v="10">10</button>
+        <button data-v="100">100</button>
+        <button data-v="1 2 3 5">1 2 3 5</button>
+      </div>
+
+      <div class="step-head"><span class="step-no">2</span><h2>放大几倍</h2></div>
+      <div class="k-row">
+        <input type="range" id="kRange" min="0.5" max="10" step="0.5" value="2" />
+        <div class="k-box">× <input class="k-input" id="kIn" value="2" inputmode="decimal" /></div>
+      </div>
+      <div class="quick" id="quickK">
+        <button data-k="1">×1</button>
+        <button data-k="2">×2</button>
+        <button data-k="3">×3</button>
+        <button data-k="5">×5</button>
+        <button data-k="10">×10</button>
+        <button data-k="0.5">×0.5</button>
+      </div>
+
+      <div class="btns">
+        <button class="btn primary" id="runBtn">加工一次</button>
+        <button class="btn ghost" id="againBtn">把结果再投进去</button>
+        <button class="btn ghost" id="resetBtn">重置</button>
+      </div>
+      <p class="hint" id="hint">试试：输入 3，选 ×2，点「加工一次」</p>
+    </section>
+
+    <!-- 右：结果与链条 -->
+    <section class="card result-card">
+      <div class="now">
+        <div class="now-label">本次产出</div>
+        <div class="flow" id="flow">—</div>
+        <div class="times-big" id="timesBig">×2</div>
+        <div class="pct" id="pct">等待第一次加工</div>
+      </div>
+
+      <div class="chain-head">
+        <h2>加工链条</h2>
+        <span class="hint" id="chainHint">每投一次，就再乘一个 k</span>
+      </div>
+      <div class="chain" id="chain">
+        <div class="empty">还没有加工记录，先点「加工一次」</div>
+      </div>
+
+      <div class="final" id="final" hidden>
+        <span id="finalText"></span>
+        y = <span id="finalK">2</span> × x₀
+        ＝ <span id="finalPct">400%</span> ＝ <span id="finalCheng">40 成</span>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="card lesson">
+    <h2>这张页在讲什么</h2>
+    <div class="lesson-grid">
+      <div class="l-item">
+        <b>f(x) = k × x</b>
+        <p>函数是台机器：<code>x</code> 是投进去的数字，<code>k</code> 是倍数，出来的 <code>y</code> 就是 <code>x</code> 的 k 倍。</p>
+      </div>
+      <div class="l-item">
+        <b>倍数 = y ÷ x</b>
+        <p>3 → 6，倍数就是 6 ÷ 3 = 2。不管投 3 还是投 100，倍数都是 k —— 这就是「几倍」。</p>
+      </div>
+      <div class="l-item">
+        <b>再投一次 = k × k</b>
+        <p>把产出再投进去：3 → 6 → 12，投 n 次就是 <code>y = kⁿ × x₀</code>，叫「翻番」。</p>
+      </div>
+      <div class="l-item">
+        <b>几成 = 百分之几</b>
+        <p>放大 2 倍是原来的 <code>200%</code>，也就是 <code>20 成</code>（1 成 = 10%）。</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ==================== 闪卡挑战 ==================== -->
+<main class="wrap flash-wrap" id="view-flash" hidden>
+
+  <div class="flash-body" id="flashBody">
+
+    <!-- 左侧：历史记录（默认收起，由「记录」按钮或翻面展开） -->
+    <aside class="hist-pane" id="histPane">
+      <div class="hist-head">
+        <h2>历史记录</h2>
+        <span class="hint" id="cxCount"></span>
+      </div>
+      <div class="hist-list" id="cxHist">
+        <div class="empty">还没有投币记录</div>
+      </div>
+      <button class="clear-btn" id="cxClear">清空</button>
+    </aside>
+
+    <div class="card-area">
+      <div class="flash-controls">
+        <div class="candy-row">
+          <label class="candy-label">投币 x =</label>
+          <input class="candy-input coin" id="cxNum" type="number" value="4" step="1" />
+        </div>
+        <div class="num-pick" id="numPick">
+          <button class="np" type="button" data-x="2">2</button>
+          <button class="np" type="button" data-x="3">3</button>
+          <button class="np active" type="button" data-x="4">4</button>
+          <button class="np" type="button" data-x="5">5</button>
+          <button class="np" type="button" data-x="6">6</button>
+        </div>
+        <button class="candy-btn" id="cxShoot">📱 投币（看产出）</button>
+        <p class="candy-hint" id="cxHint">输入任意数字投币，或点 2-6 快捷选数——公式先藏着，自己分析</p>
+      </div>
+
+      <div class="card-slot" id="cardSlot">
+
+        <div class="candy-card" data-i="0">
+          <div class="candy-inner">
+            <div class="candy-face candy-front">
+              <div class="fc-index">①</div>
+              <h2 class="candy-title"><span class="silver">加工公式 1</span></h2>
+              <p class="candy-hint">点一下卡片，翻面看产出（公式先藏着）</p>
+            </div>
+            <div class="candy-face candy-back">
+              <div class="cb-tag">加工完成</div>
+              <div class="cb-x" id="cbX0">投币 x = 4</div>
+              <div class="cb-out" id="cbOut0"></div>
+              <div class="cb-icons" id="cbIcons0"></div>
+              <p class="cb-back-hint">换个数字再投币，分析出公式</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="candy-card" data-i="1">
+          <div class="candy-inner">
+            <div class="candy-face candy-front">
+              <div class="fc-index">②</div>
+              <h2 class="candy-title"><span class="silver">加工公式 2</span></h2>
+              <p class="candy-hint">点一下卡片，翻面看产出（公式先藏着）</p>
+            </div>
+            <div class="candy-face candy-back">
+              <div class="cb-tag">加工完成</div>
+              <div class="cb-x" id="cbX1">投币 x = 4</div>
+              <div class="cb-out" id="cbOut1"></div>
+              <div class="cb-icons" id="cbIcons1"></div>
+              <p class="cb-back-hint">换个数字再投币，分析出公式</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="candy-card" data-i="2">
+          <div class="candy-inner">
+            <div class="candy-face candy-front">
+              <div class="fc-index">③</div>
+              <h2 class="candy-title"><span class="silver">加工公式 3</span></h2>
+              <p class="candy-hint">点一下卡片，翻面看产出（公式先藏着）</p>
+            </div>
+            <div class="candy-face candy-back">
+              <div class="cb-tag">加工完成</div>
+              <div class="cb-x" id="cbX2">投币 x = 4</div>
+              <div class="cb-out" id="cbOut2"></div>
+              <div class="cb-icons" id="cbIcons2"></div>
+              <p class="cb-back-hint">换个数字再投币，分析出公式</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 与卡片同属一个槽位，翻面时一起右移 -->
+      <button class="icon-btn wide" id="histToggle" aria-label="历史记录">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="8.2" />
+          <path d="M12 7.8v4.6l3 1.8" />
+        </svg>
+        <span>记录</span>
+        <span class="badge" id="histBadge">0</span>
+      </button>
+    </div>
+
+  </div>
+</main>
+
+<script src="settings.js?v=20261030q"></script>
+<script src="app.js?v=20261030q"></script>
+<script src="candy.js?v=20261030q"></script>
+<script src="liquid.js?v=20261030q"></script>
+<script src="liquid-glass.js?v=20261030q"></script>
+</body>
+</html>
